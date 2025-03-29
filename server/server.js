@@ -1,5 +1,4 @@
 import dotenv from 'dotenv'; 
-
 // Load environment variables from .env file
 dotenv.config();
 
@@ -30,7 +29,7 @@ app.get("/server-alive", (req, res) => {
   res.send("Abhi hum zinda hai");
 });
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
