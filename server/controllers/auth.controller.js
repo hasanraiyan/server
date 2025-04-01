@@ -281,9 +281,24 @@ export const getUserProfile = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized access." });
     }
 
-    res.status(200).json({ user: req.user });
+    let userQuery = User.findById(req.user.userId).select("-passwordHash -resetPasswordToken -resetPasswordExpires -verificationToken -__v -createdAt -updatedAt");
+
+    // If user is viewing their own profile, include email
+    if (req.user.userId === req.params.userId) {
+      userQuery = userQuery.select("+email"); // Only expose email if it's the owner
+    }
+
+    const user = await userQuery;
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.status(200).json({ user });
   } catch (error) {
     console.error("Get user profile error:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 };
+
+
