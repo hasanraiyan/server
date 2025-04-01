@@ -17,7 +17,7 @@ app.use(cors()); // Enable Cross-Origin Resource Sharing
 app.use(express.json()); // Parse JSON request bodies
 
 // --- Mount Routers ---
-app.use("/auth", authRoutes); // Mount authentication routes under /auth path
+app.use("/auth", authRoutes); 
 
 app.use((req, res, next) => {
   console.log(`Request received: ${req.method} ${req.url}`);
@@ -29,7 +29,6 @@ app.get("/server-alive", (req, res) => {
   res.send("Abhi hum zinda hai");
 });
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+

@@ -10,11 +10,11 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-very-strong-secret-key";
 // POST /auth/register
 export const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password , name} = req.body;
 
     // 1. Validate input
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "Username, email, and password are required" });
+    if (!username || !email || !password || !name) {
+      return res.status(400).json({ message: "Username, email, name and password are required" });
     }
     if (!/\S+@\S+\.\S+/.test(email)) {
         return res.status(400).json({ message: "Invalid email format" });
@@ -42,6 +42,7 @@ export const register = async (req, res) => {
 
     // 5. Create and save user in DB
     const newUser = new User({
+      name: name,
       username: username,
       email: email.toLowerCase(),
       passwordHash,
@@ -119,10 +120,10 @@ export const login = async (req, res) => {
       userId: user._id,
       email: user.email,
     };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' }); // Adjust expiry as needed
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '2h' }); 
 
     // 6. Send JWT back to client
-    res.status(200).json({ message: "Login successful", token: token });
+    res.status(200).json({ message: "Login successful", token: token, user: { id: user._id, email: user.email, name: user.name } });
 
   } catch (error) {
     console.error("Login error:", error);
@@ -244,5 +245,45 @@ export const resetPassword = async (req, res) => {
   } catch (error) {
     console.error("Reset password error:", error);
     res.status(500).json({ message: "Internal server error during password reset" });
+  }
+};
+
+
+// Middleware to verify JWT and get user details
+export const verifyToken = (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1]; // Expecting "Bearer <token>"
+    
+    if (!token) {
+      return res.status(401).json({ message: "Access denied. No token provided." });
+    }
+
+    // Verify the token
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ message: "Invalid or expired token." });
+      }
+      
+      // Attach user details to request
+      req.user = decoded;
+      next();
+    });
+  } catch (error) {
+    console.error("JWT Verification error:", error);
+    res.status(500).json({ message: "Internal server error during token verification." });
+  }
+};
+
+// Example usage in a protected route
+export const getUserProfile = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized access." });
+    }
+
+    res.status(200).json({ user: req.user });
+  } catch (error) {
+    console.error("Get user profile error:", error);
+    res.status(500).json({ message: "Internal server error." });
   }
 };
