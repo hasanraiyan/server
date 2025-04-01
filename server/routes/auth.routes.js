@@ -18,7 +18,7 @@ router.post('/forgot-password', forgotPassword);
 router.get('/reset-password/:token', renderResetPasswordForm); // Optional: To show a form
 router.post('/reset-password/:token', resetPassword);
 
-
+router.get('/users/:userId', verifyToken, getUserProfile);
 // Add protected route
 router.get('/profile', verifyToken, getUserProfile);
 
