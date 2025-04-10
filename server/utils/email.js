@@ -12,12 +12,16 @@ const transporter = nodemailer.createTransport({
 // Function to send a verification email
 export const sendVerificationEmail = async (email, verificationLink) => {
   try {
-    await transporter.sendMail({
-      to: email,
-      subject: 'Verify Your Email Address',
-      html: `Please click this link to verify your email: <a href="${verificationLink}">${verificationLink}</a>`,
-    });
-    console.log(`Verification email sent to ${email}`);
+    if (process.env.SEND_EMAILS === 'true') {
+      await transporter.sendMail({
+        to: email,
+        subject: 'Verify Your Email Address',
+        html: `Please click this link to verify your email: <a href="${verificationLink}">${verificationLink}</a>`,
+      });
+      console.log(`Verification email sent to ${email}`);
+    } else {
+      console.log('Email sending is disabled in the current environment.');
+    }
   } catch (error) {
     console.error('Error sending verification email:', error);
     throw error; // Re-throw to be handled in the controller
@@ -27,12 +31,16 @@ export const sendVerificationEmail = async (email, verificationLink) => {
 // Function to send a password reset email
 export const sendPasswordResetEmail = async (email, resetLink) => {
   try {
-    await transporter.sendMail({
-      to: email,
-      subject: 'Password Reset Request',
-      html: `Please click this link to reset your password: <a href="${resetLink}">${resetLink}</a>`,
-    });
-    console.log(`Password reset email sent to ${email}`);
+    if (process.env.SEND_EMAILS === 'true') {
+      await transporter.sendMail({
+        to: email,
+        subject: 'Password Reset Request',
+        html: `Please click this link to reset your password: <a href="${resetLink}">${resetLink}</a>`,
+      });
+      console.log(`Password reset email sent to ${email}`);
+    } else {
+      console.log('Email sending is disabled in the current environment.');
+    }
   } catch (error) {
     console.error('Error sending password reset email:', error);
     throw error; // Re-throw to be handled in the controller

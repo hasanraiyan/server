@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 
 // Use environment variables for sensitive data like connection strings
-// const MONGO_URI = "mongodb+srv://raiyanhasan:Raiyan%40123@dostify-user.vvkyza0.mongodb.net/dostify-users";
-const MONGO_URI = "mongodb://localhost:27017/dostify-users";
+const MONGO_URI = "mongodb+srv://raiyanhasan:Raiyan%40123@dostify-user.vvkyza0.mongodb.net/dostify-users";
+// const MONGO_URI = "mongodb://localhost:27017/dostify-users";
 console.log("MONGO_URI:", MONGO_URI);
 const connectDB = async () => {
   try {
