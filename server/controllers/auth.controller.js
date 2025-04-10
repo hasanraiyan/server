@@ -73,7 +73,7 @@ export const register = async (req, res) => {
       username: username,
       email: lowerCaseEmail,
       passwordHash,
-      isVerified: false,
+      isVerified: true,
       verificationToken,
     });
     if (DEBUG_MODE) console.log('[register] New user object created:', { email: newUser.email, username: newUser.username, name: newUser.name });
